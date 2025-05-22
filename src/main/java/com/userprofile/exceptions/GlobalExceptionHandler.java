@@ -7,6 +7,7 @@ import org.springframework.context.NoSuchMessageException;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,6 +42,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return buildErrorResponse(e.getMessage(), HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<ErrorResponse> buildErrorResponse(String message, HttpStatus status) {
         ErrorResponse errorResponse = new ErrorResponse(LocalDateTime.now(), status.value(), status.getReasonPhrase(), message);
         return new ResponseEntity<>(errorResponse, status);
@@ -53,14 +59,13 @@ public class GlobalExceptionHandler {
         Map<String, String> errors = new HashMap<>();
 
         ex.getBindingResult().getFieldErrors().forEach(error ->
-            errors.put(error.getField(), error.getDefaultMessage())
+                errors.put(error.getField(), error.getDefaultMessage())
         );
 
         responseBody.put(messageSource.getMessage("response.timestamp", null, LocaleContextHolder.getLocale()), LocalDateTime.now());
         responseBody.put(messageSource.getMessage("response.status", null, LocaleContextHolder.getLocale()), HttpStatus.BAD_REQUEST.value());
         responseBody.put(messageSource.getMessage("response.error", null, LocaleContextHolder.getLocale()), messageSource.getMessage("error.validation.failed", null, LocaleContextHolder.getLocale()));
         responseBody.put(messageSource.getMessage("response.message", null, LocaleContextHolder.getLocale()), errors);
-
 
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
@@ -85,7 +90,6 @@ public class GlobalExceptionHandler {
         responseBody.put(messageSource.getMessage("response.status", null, LocaleContextHolder.getLocale()), HttpStatus.BAD_REQUEST.value());
         responseBody.put(messageSource.getMessage("response.error", null, LocaleContextHolder.getLocale()), messageSource.getMessage("error.validation.failed", null, LocaleContextHolder.getLocale()));
         responseBody.put(messageSource.getMessage("response.message", null, LocaleContextHolder.getLocale()), errors);
-
 
 
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
