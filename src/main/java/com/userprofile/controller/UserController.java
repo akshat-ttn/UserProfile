@@ -2,6 +2,7 @@ package com.userprofile.controller;
 
 import com.userprofile.dto.GenericResponseDTO;
 import com.userprofile.dto.UserDTO;
+import com.userprofile.dto.UserUpdateDTO;
 import com.userprofile.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,7 @@ public class UserController {
     private final MessageSource messageSource;
 
 
-    @GetMapping("/sellers")
+    @GetMapping("")
     public ResponseEntity<List<UserDTO>> getAllUsers(
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageOffset,
@@ -37,6 +38,15 @@ public class UserController {
         userService.saveUser(userDTO);
         return new ResponseEntity<>(new GenericResponseDTO(true, messageSource.getMessage("user.created.success",null,LocaleContextHolder.getLocale())), HttpStatus.CREATED);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GenericResponseDTO> updateUser(@Valid @RequestBody UserUpdateDTO userDTO, @PathVariable String id){
+        userService.updateUser(id,userDTO);
+        return ResponseEntity.ok(new GenericResponseDTO(true, messageSource.getMessage("user.profile.updated", null,LocaleContextHolder.getLocale())));
+
+    }
+
+
 
 
 

@@ -1,10 +1,13 @@
 package com.userprofile.service;
 
 import com.userprofile.dto.UserDTO;
+import com.userprofile.dto.UserUpdateDTO;
 import com.userprofile.exceptions.EmailAlreadyInUseException;
 import com.userprofile.exceptions.PasswordMismatchException;
+import com.userprofile.exceptions.UserNotFoundException;
 import com.userprofile.model.User;
 import com.userprofile.repository.UserRepository;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
@@ -23,8 +26,6 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final MessageSource messageSource;
-
-
 
      public void saveUser(UserDTO userDTO) {
         if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
@@ -68,5 +69,23 @@ public class UserService {
                         .active(user.isActive())
                         .build())
                 .toList();
+    }
+
+
+    public void updateUser(String id, UserUpdateDTO userDTO) {
+        User user = userRepository.findById(id).
+                orElseThrow(() -> new UserNotFoundException(messageSource.getMessage("user.not.found", new Object[]{id},LocaleContextHolder.getLocale())));
+
+        user.setFirstName(getUpdatedValue(userDTO.getFirstName(),user.getFirstName()));
+        user.setMiddleName(userDTO.getMiddleName());
+        user.setLastName(getUpdatedValue(userDTO.getLastName(),user.getLastName()));
+        user.setPhoneNumber(getUpdatedValue(userDTO.getPhoneNumber(),user.getPhoneNumber()));
+
+        userRepository.save(user);
+    }
+
+
+    private String getUpdatedValue(String newValue, String oldValue) {
+        return (newValue != null && !newValue.isBlank()) ? newValue : oldValue;
     }
 }
