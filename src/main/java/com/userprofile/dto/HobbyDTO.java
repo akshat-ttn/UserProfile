@@ -1,5 +1,6 @@
 package com.userprofile.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.userprofile.enums.HobbyType;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,9 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 public class HobbyDTO {
+
+    @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
+    private String id;
 
     @NotBlank(message = "{hobby.name.required}")
     @Size(min = 2, max = 50, message = "{hobby.name.size}")

@@ -3,6 +3,10 @@ package com.userprofile.model;
 import com.userprofile.enums.HobbyType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -10,6 +14,7 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
+@EntityListeners(AuditingEntityListener.class)
 public class Hobby {
 
     @Id
@@ -22,6 +27,10 @@ public class Hobby {
 
     @Enumerated(EnumType.STRING)
     private HobbyType hobbyType;
+
+    @CreatedDate
+    @Column(nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 
 }
 

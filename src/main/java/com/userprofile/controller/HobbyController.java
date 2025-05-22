@@ -11,15 +11,23 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("users/hobby")
+@RequestMapping("users/hobby/{userId}")
 public class HobbyController {
 
     private final HobbyService hobbyService;
     public final MessageSource messageSource;
 
-    @PostMapping("/{userId}")
+    @GetMapping()
+    public ResponseEntity<List<HobbyDTO>> getAllHobbies(@PathVariable String userId) {
+        return ResponseEntity.ok(hobbyService.getAllHobbies(userId));
+    }
+
+
+    @PostMapping()
     public ResponseEntity<GenericResponseDTO> saveHobby(@Valid @RequestBody HobbyDTO hobbyDTO, @PathVariable String userId) {
         hobbyService.saveHobby(userId,hobbyDTO);
         return new ResponseEntity<>(new GenericResponseDTO(true, messageSource.getMessage("user.hobby.added.success",null, LocaleContextHolder.getLocale())), HttpStatus.CREATED);
