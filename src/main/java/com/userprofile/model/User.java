@@ -19,7 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @EntityListeners(AuditingEntityListener.class)
-@SQLDelete(sql = "update users set is_deleted=true where id=?")
+@SQLDelete(sql = "update user set is_deleted=true where id=?")
 @SQLRestriction(value = "is_deleted = false")
 public class User {
 
@@ -29,6 +29,7 @@ public class User {
 
     @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
+    @Builder.Default
     private List<Hobby> hobbies = new ArrayList<>();
 
     private String firstName;
@@ -37,8 +38,11 @@ public class User {
     private String phoneNumber;
     private String email;
     private String password;
+
+    @Builder.Default
     private boolean isDeleted = false;
 
+    @Builder.Default
     private boolean isActive = true;
 
     @CreatedDate

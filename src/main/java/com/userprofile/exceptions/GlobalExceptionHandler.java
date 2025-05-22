@@ -26,6 +26,11 @@ public class GlobalExceptionHandler {
         return buildErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+        return buildErrorResponse(e.getMessage(), HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(EmailAlreadyInUseException.class)
     public ResponseEntity<ErrorResponse> handleEmailAlreadyInUse(EmailAlreadyInUseException e) {
         return buildErrorResponse(e.getMessage(), HttpStatus.CONFLICT);
@@ -47,9 +52,9 @@ public class GlobalExceptionHandler {
         Map<String, Object> responseBody = new HashMap<>();
         Map<String, String> errors = new HashMap<>();
 
-        ex.getBindingResult().getFieldErrors().forEach(error -> {
-            errors.put(error.getField(), error.getDefaultMessage());
-        });
+        ex.getBindingResult().getFieldErrors().forEach(error ->
+            errors.put(error.getField(), error.getDefaultMessage())
+        );
 
         responseBody.put(messageSource.getMessage("response.timestamp", null, LocaleContextHolder.getLocale()), LocalDateTime.now());
         responseBody.put(messageSource.getMessage("response.status", null, LocaleContextHolder.getLocale()), HttpStatus.BAD_REQUEST.value());

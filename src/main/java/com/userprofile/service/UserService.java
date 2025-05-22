@@ -50,8 +50,9 @@ public class UserService {
         userRepository.save(user);
     }
 
-    public List<UserDTO> getAllUsers(int pageSize, int pageOffset, String sort, String email) {
-        Pageable  pageable = PageRequest.of(pageOffset, pageSize, Sort.by(sort));
+    public List<UserDTO> getAllUsers(int pageSize, int pageOffset, String sort, String direction, String email) {
+        Sort.Direction sortDirection = direction.equalsIgnoreCase("desc") ? Sort.Direction.DESC : Sort.Direction.ASC;
+        Pageable  pageable = PageRequest.of(pageOffset, pageSize, Sort.by(sortDirection,sort));
         Page<User> userPage;
         if (email != null && !email.isBlank())
             userPage = userRepository.findByEmailContainingIgnoreCase(email, pageable);
@@ -87,5 +88,12 @@ public class UserService {
 
     private String getUpdatedValue(String newValue, String oldValue) {
         return (newValue != null && !newValue.isBlank()) ? newValue : oldValue;
+    }
+
+    public void deleteUser(String id) {
+        User user = userRepository.findById(id).
+                orElseThrow(() -> new UserNotFoundException(messageSource.getMessage("user.not.found", new Object[]{id},LocaleContextHolder.getLocale())));
+
+        userRepository.delete(user);
     }
 }

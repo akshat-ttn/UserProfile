@@ -28,9 +28,10 @@ public class UserController {
             @RequestParam(defaultValue = "10") int pageSize,
             @RequestParam(defaultValue = "0") int pageOffset,
             @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(defaultValue = "asc") String direction,
             @RequestParam(required = false) String email
     ) {
-        return ResponseEntity.ok(userService.getAllUsers(pageSize, pageOffset, sort,email));
+        return ResponseEntity.ok(userService.getAllUsers(pageSize, pageOffset, sort,direction,email));
     }
 
     @PostMapping()
@@ -43,6 +44,13 @@ public class UserController {
     public ResponseEntity<GenericResponseDTO> updateUser(@Valid @RequestBody UserUpdateDTO userDTO, @PathVariable String id){
         userService.updateUser(id,userDTO);
         return ResponseEntity.ok(new GenericResponseDTO(true, messageSource.getMessage("user.profile.updated", null,LocaleContextHolder.getLocale())));
+
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<GenericResponseDTO> deleteUser(@PathVariable String id){
+        userService.deleteUser(id);
+        return ResponseEntity.ok(new GenericResponseDTO(true, messageSource.getMessage("user.deleted.success", null, LocaleContextHolder.getLocale())));
 
     }
 
