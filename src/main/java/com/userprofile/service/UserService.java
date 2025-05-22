@@ -59,6 +59,7 @@ public class UserService {
 
         return userPage.stream()
                 .map(user -> UserDTO.builder()
+                        .id(user.getId())
                         .firstName(user.getFirstName())
                         .middleName(user.getMiddleName())
                         .lastName(user.getLastName())

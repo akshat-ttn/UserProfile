@@ -15,6 +15,10 @@ import lombok.*;
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
+
+    @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
+    private String id;
+
     @NotBlank(message = "{first.name.required}")
     @Size(min = 2, max = 50, message = "{first.name.size}")
     @Pattern(regexp = "^[A-Za-z]+$", message = "{first.name.pattern}")
@@ -59,6 +63,10 @@ public class UserDTO {
 
     @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
     private boolean active;
+
+
+
+
 
 }
 
