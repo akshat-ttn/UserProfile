@@ -9,7 +9,14 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -40,5 +47,25 @@ public class UserService {
             user.setMiddleName(userDTO.getMiddleName());
         }
         userRepository.save(user);
+    }
+
+    public List<UserDTO> getAllUsers(int pageSize, int pageOffset, String sort, String email) {
+        Pageable  pageable = PageRequest.of(pageOffset, pageSize, Sort.by(sort));
+        Page<User> userPage;
+        if (email != null && !email.isBlank())
+            userPage = userRepository.findByEmailContainingIgnoreCase(email, pageable);
+        else
+            userPage = userRepository.findAll(pageable);
+
+        return userPage.stream()
+                .map(user -> UserDTO.builder()
+                        .firstName(user.getFirstName())
+                        .middleName(user.getMiddleName())
+                        .lastName(user.getLastName())
+                        .phoneNumber(user.getPhoneNumber())
+                        .email(user.getEmail())
+                        .active(user.isActive())
+                        .build())
+                .toList();
     }
 }

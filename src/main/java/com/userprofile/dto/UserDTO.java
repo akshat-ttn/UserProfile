@@ -1,18 +1,17 @@
 package com.userprofile.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
+@Builder
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserDTO {
@@ -20,6 +19,7 @@ public class UserDTO {
     @Size(min = 2, max = 50, message = "{first.name.size}")
     @Pattern(regexp = "^[A-Za-z]+$", message = "{first.name.pattern}")
     private String firstName;
+
 
     @Size(max = 50, message = "{middle.name.size}")
     @Pattern(regexp = "^[A-Za-z]*$", message = "{middle.name.pattern}")
@@ -56,6 +56,9 @@ public class UserDTO {
 
     @NotBlank(message = "{confirm.password.required}")
     private String confirmPassword;
+
+    @JsonProperty(access =  JsonProperty.Access.READ_ONLY)
+    private boolean active;
 
 }
 

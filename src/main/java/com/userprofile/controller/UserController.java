@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Locale;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,11 +22,23 @@ public class UserController {
     private final MessageSource messageSource;
 
 
+    @GetMapping("/sellers")
+    public ResponseEntity<List<UserDTO>> getAllUsers(
+            @RequestParam(defaultValue = "10") int pageSize,
+            @RequestParam(defaultValue = "0") int pageOffset,
+            @RequestParam(defaultValue = "createdAt") String sort,
+            @RequestParam(required = false) String email
+    ) {
+        return ResponseEntity.ok(userService.getAllUsers(pageSize, pageOffset, sort,email));
+    }
+
     @PostMapping()
     public ResponseEntity<GenericResponseDTO> saveUser(@Valid @RequestBody UserDTO userDTO){
         userService.saveUser(userDTO);
         return new ResponseEntity<>(new GenericResponseDTO(true, messageSource.getMessage("user.created.success",null,LocaleContextHolder.getLocale())), HttpStatus.CREATED);
     }
+
+
 
 
 }
