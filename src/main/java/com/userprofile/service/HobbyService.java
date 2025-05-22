@@ -1,13 +1,19 @@
 package com.userprofile.service;
 
 import com.userprofile.dto.HobbyDTO;
+import com.userprofile.dto.UserDTO;
 import com.userprofile.exceptions.UserNotFoundException;
 import com.userprofile.model.Hobby;
 import com.userprofile.model.User;
+import com.userprofile.repository.HobbyRepository;
 import com.userprofile.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +24,7 @@ import java.util.List;
 public class HobbyService {
     private final UserRepository userRepository;
     private final MessageSource messageSource;
+    private final HobbyRepository hobbyRepository;
 
     public void saveHobby(String userId, HobbyDTO hobbyDTO) {
         User user = userRepository.findById(userId).
