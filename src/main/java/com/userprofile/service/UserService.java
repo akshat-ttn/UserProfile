@@ -1,0 +1,44 @@
+package com.userprofile.service;
+
+import com.userprofile.dto.UserDTO;
+import com.userprofile.exceptions.EmailAlreadyInUseException;
+import com.userprofile.exceptions.PasswordMismatchException;
+import com.userprofile.model.User;
+import com.userprofile.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.stereotype.Service;
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class UserService {
+    private final UserRepository userRepository;
+    private final MessageSource messageSource;
+
+
+
+     public void saveUser(UserDTO userDTO) {
+        if (!userDTO.getPassword().equals(userDTO.getConfirmPassword())) {
+            log.warn("Password mismatch for email: {}", userDTO.getEmail());
+            throw new PasswordMismatchException(messageSource.getMessage("password.mismatch", null, LocaleContextHolder.getLocale()));
+        }
+        if (userRepository.findByEmail(userDTO.getEmail()).isPresent()) {
+            log.warn("Email already in use: {}", userDTO.getEmail());
+            throw new EmailAlreadyInUseException(messageSource.getMessage("email.in.use", new Object[]{userDTO.getEmail()}, LocaleContextHolder.getLocale()));
+        }
+
+        User user = User.builder()
+                .firstName(userDTO.getFirstName())
+                .lastName(userDTO.getLastName())
+                .phoneNumber(userDTO.getPhoneNumber())
+                .email(userDTO.getEmail())
+                .password(userDTO.getPassword())
+                .build();
+        if (userDTO.getMiddleName() != null && !userDTO.getMiddleName().isEmpty()) {
+            user.setMiddleName(userDTO.getMiddleName());
+        }
+        userRepository.save(user);
+    }
+}

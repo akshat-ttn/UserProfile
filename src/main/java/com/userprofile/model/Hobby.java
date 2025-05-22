@@ -1,9 +1,8 @@
-package com.apnabaazar.userprofile.model;
+package com.userprofile.model;
 
-import com.apnabaazar.userprofile.enums.HobbyType;
+import com.userprofile.enums.HobbyType;
 import jakarta.persistence.*;
 import lombok.*;
-import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
 @Builder

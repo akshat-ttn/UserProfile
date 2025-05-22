@@ -1,4 +1,4 @@
-package com.apnabaazar.userprofile;
+package com.userprofile;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

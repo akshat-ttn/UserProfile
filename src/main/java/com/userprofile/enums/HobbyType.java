@@ -1,4 +1,4 @@
-package com.apnabaazar.userprofile.enums;
+package com.userprofile.enums;
 
 public enum HobbyType {
     CREATIVE,

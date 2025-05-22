@@ -1,4 +1,4 @@
-package com.apnabaazar.userprofile.model;
+package com.userprofile.model;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,7 +39,7 @@ public class User {
     private String password;
     private boolean isDeleted = false;
 
-    private boolean isActive = false;
+    private boolean isActive = true;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
